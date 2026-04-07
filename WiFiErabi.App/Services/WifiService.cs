@@ -10,6 +10,7 @@ public sealed class WifiService
     private static readonly Regex SsidHeaderRegex = new(@"^SSID\s+\d+\s*:\s*(.*)$", RegexOptions.Compiled);
     private static readonly Regex BssidHeaderRegex = new(@"^BSSID\s+\d+\s*:\s*(.*)$", RegexOptions.Compiled);
     private static readonly Regex KeyValueRegex = new(@"^[^:]+:\s*(.+)$", RegexOptions.Compiled);
+    private static readonly Regex FrequencyRegex = new(@"(?<value>\d+(?:\.\d+)?)\s*(?<unit>GHz|MHz)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
     private static readonly Regex InterfaceNameRegex = new(@"^(?:Name|名前)\s*:\s*(.+)$", RegexOptions.Compiled);
     private static readonly Regex StateRegex = new(@"^(?:State|状態)\s*:\s*(.+)$", RegexOptions.Compiled);
     private static readonly Regex ProfileRegex = new(@"^(?:All User Profile|Current User Profile|すべてのユーザー プロファイル|現在のユーザー プロファイル)\s*:\s*(.+)$", RegexOptions.Compiled);
@@ -281,6 +282,12 @@ public sealed class WifiService
                 continue;
             }
 
+            if (string.IsNullOrWhiteSpace(current.Band) && TryParseBand(value, out var band))
+            {
+                current.Band = band;
+                continue;
+            }
+
             if (current.Channel is null && int.TryParse(value, out var channel))
             {
                 current.Channel = channel;
@@ -393,17 +400,71 @@ public sealed class WifiService
             return "2.4GHz";
         }
 
-        if (channel is >= 15 and <= 177)
+        if (channel is >= 32 and <= 177)
         {
             return "5GHz";
         }
 
-        if (channel >= 178)
+        return null;
+    }
+
+    private static bool TryParseBand(string value, out string? band)
+    {
+        band = null;
+        if (string.IsNullOrWhiteSpace(value))
         {
-            return "6GHz";
+            return false;
         }
 
-        return null;
+        var normalized = value.Trim().Replace(" ", string.Empty);
+        if (normalized.Contains("2.4GHz", StringComparison.OrdinalIgnoreCase))
+        {
+            band = "2.4GHz";
+            return true;
+        }
+
+        if (normalized.Contains("5GHz", StringComparison.OrdinalIgnoreCase))
+        {
+            band = "5GHz";
+            return true;
+        }
+
+        if (normalized.Contains("6GHz", StringComparison.OrdinalIgnoreCase))
+        {
+            band = "6GHz";
+            return true;
+        }
+
+        var match = FrequencyRegex.Match(value);
+        if (!match.Success || !double.TryParse(match.Groups["value"].Value, out var frequency))
+        {
+            return false;
+        }
+
+        var unit = match.Groups["unit"].Value;
+        var frequencyGhz = unit.Equals("MHz", StringComparison.OrdinalIgnoreCase)
+            ? frequency / 1000.0
+            : frequency;
+
+        if (frequencyGhz is >= 2.4 and < 2.5)
+        {
+            band = "2.4GHz";
+            return true;
+        }
+
+        if (frequencyGhz is >= 4.9 and < 5.95)
+        {
+            band = "5GHz";
+            return true;
+        }
+
+        if (frequencyGhz is >= 5.95 and < 7.2)
+        {
+            band = "6GHz";
+            return true;
+        }
+
+        return false;
     }
 
     private static string? GetValueAfterColon(string line)
