@@ -2,6 +2,8 @@
 
 近くにある Wi-Fi を見比べて、よさそうな接続先へ切り替えやすくする Windows アプリです。
 
+<img width="914" height="557" alt="スクリーンショット 2026-04-07 165123" src="https://github.com/user-attachments/assets/f477ef1a-bd91-48a4-b696-d155cae77976" />
+
 今つながっている Wi-Fi を見ながら、
 
 - 近くの Wi-Fi を一覧で確認する
