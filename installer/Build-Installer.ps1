@@ -8,6 +8,7 @@ $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $publishScript = Join-Path $PSScriptRoot "Build-Publish.ps1"
 $issPath = Join-Path $PSScriptRoot "WiFiErabi.iss"
+$projectPath = Join-Path $repoRoot "WiFiErabi.App\WiFiErabi.App.csproj"
 $iscc = Get-Command iscc -ErrorAction SilentlyContinue
 
 if (-not $iscc) {
@@ -37,11 +38,18 @@ If you only want the publish output, run:
 
 $publishDir = Join-Path $repoRoot "artifacts\publish\$RuntimeIdentifier"
 $outputDir = Join-Path $repoRoot "artifacts\installer"
+$projectXml = [xml](Get-Content -Raw $projectPath)
+$projectVersion = $projectXml.Project.PropertyGroup.Version | Select-Object -First 1
+
+if ([string]::IsNullOrWhiteSpace($projectVersion)) {
+    throw "Version was not found in $projectPath."
+}
 
 Write-Host ""
 Write-Host "Creating installer..." -ForegroundColor Cyan
 
 & $iscc.Source `
+    "/DMyAppVersion=$projectVersion" `
     "/DMyAppPublishDir=$publishDir" `
     "/DMyInstallerOutputDir=$outputDir" `
     $issPath

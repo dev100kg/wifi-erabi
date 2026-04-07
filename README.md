@@ -60,6 +60,17 @@ powershell -File .\installer\Build-Installer.ps1
 
 インストーラ設定ファイルは `installer/WiFiErabi.iss` です。
 
+## GitHub Releases で配布する
+
+タグを `v0.1.0` のように切って push すると、GitHub Actions の `Release` ワークフローで
+
+- インストーラ
+- portable zip
+
+を作って GitHub Releases に載せるようにしています。
+
+詳しい手順は `RELEASE.md` にまとめています。
+
 ## うまく動かないとき
 
 Wi-Fi 一覧が取れないときは、次を確認してください。

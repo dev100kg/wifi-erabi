@@ -1,0 +1,79 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag, for example v0.1.0"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install Inno Setup
+        run: choco install innosetup --no-progress -y
+
+      - name: Resolve tag
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            "RELEASE_TAG=${{ inputs.tag }}" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          }
+          else {
+            "RELEASE_TAG=${{ github.ref_name }}" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          }
+
+      - name: Build installer
+        shell: pwsh
+        run: powershell -ExecutionPolicy Bypass -File .\installer\Build-Installer.ps1
+
+      - name: Prepare release assets
+        shell: pwsh
+        run: |
+          $releaseDir = Join-Path $PWD "artifacts\release"
+          $publishDir = Join-Path $PWD "artifacts\publish\win-x64"
+          $installerSource = Join-Path $PWD "artifacts\installer\WiFiErabi-Setup.exe"
+          $installerTarget = Join-Path $releaseDir "WiFiErabi-Setup-$env:RELEASE_TAG.exe"
+          $portableZip = Join-Path $releaseDir "WiFiErabi-$env:RELEASE_TAG-portable.zip"
+
+          New-Item -ItemType Directory -Force $releaseDir | Out-Null
+          Copy-Item $installerSource $installerTarget -Force
+
+          if (Test-Path $portableZip) {
+            Remove-Item $portableZip -Force
+          }
+
+          Compress-Archive -Path (Join-Path $publishDir "*") -DestinationPath $portableZip
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $installer = Join-Path $PWD "artifacts\release\WiFiErabi-Setup-$env:RELEASE_TAG.exe"
+          $portable = Join-Path $PWD "artifacts\release\WiFiErabi-$env:RELEASE_TAG-portable.zip"
+
+          gh release create $env:RELEASE_TAG `
+            $installer `
+            $portable `
+            --repo ${{ github.repository }} `
+            --title $env:RELEASE_TAG `
+            --generate-notes

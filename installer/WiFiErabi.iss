@@ -1,9 +1,12 @@
 #define MyAppName "Wi-Fiえらび"
 #define MyAppExeName "WiFiErabi.App.exe"
-#define MyAppVersion "0.1.0"
 #define MyAppPublisher "Wi-Fiえらび"
 #define MyAppURL "https://github.com/dev100kg/wifi-erabi"
 #define MyAppId "{{7D15CA90-5908-4F87-8F2F-A2E4C2B5A9C4}"
+
+#ifndef MyAppVersion
+  #define MyAppVersion "0.1.0"
+#endif
 
 #ifndef MyAppPublishDir
   #define MyAppPublishDir "..\artifacts\publish\win-x64"
