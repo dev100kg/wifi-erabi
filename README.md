@@ -22,5 +22,5 @@
 
 ## フォント
 
-アプリ全体で `UDEV Gothic JPDOC` を使わせていただいております。
+`UDEV Gothic JPDOC` を使わせていただいております。
 https://github.com/yuru7/udev-gothic
