@@ -1,6 +1,6 @@
 # Wi-Fiえらび
 
-近くにある Wi-Fi を見比べて、よさそうな接続先へ切り替えやすくする Windows アプリです。
+近くにある Wi-Fi を見比べて、よさげな接続先へ切り替えやすくする Windows アプリです。
 
 <img width="914" height="557" alt="スクリーンショット 2026-04-07 165123" src="https://github.com/user-attachments/assets/f477ef1a-bd91-48a4-b696-d155cae77976" />
 
@@ -11,6 +11,8 @@
 - そのまま接続先を切り替える
 
 ことができます。
+
+ただし、過去に手動で接続したことがあるアクセスポイントにしか切り替えられません。
 
 ## 注意
 
@@ -25,3 +27,4 @@
 ## フォント
 
 アプリ全体で `UDEV Gothic JPDOC` を使わせていただいております。
+https://github.com/yuru7/udev-gothic
