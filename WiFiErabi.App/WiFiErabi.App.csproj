@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <AssemblyName>WiFiErabi.App</AssemblyName>
+    <RootNamespace>WiFiErabi.App</RootNamespace>
+    <Product>Wi-Fiえらび</Product>
+    <AssemblyTitle>Wi-Fiえらび</AssemblyTitle>
+    <Version>0.1.0</Version>
+    <FileVersion>0.1.0.0</FileVersion>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <Authors>dev10</Authors>
+    <Company>Wi-Fiえらび</Company>
+    <PublisherName>Wi-Fiえらび</PublisherName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Fonts\*.ttf" />
+    <Resource Include="Fonts\*.otf" />
+    <None Include="Fonts\LICENSE*" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Fonts\README.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
