@@ -18,89 +18,16 @@
 - 一覧から選んで接続する
 - 接続後に自動で最新状態へ更新する
 
-## フォルダ構成
+## 注意
 
-- `WiFiErabi.App`: アプリ本体です
-- `installer`: 配布用ファイルやインストーラを作るためのファイルです
-- `legacy`: 試作で作った PowerShell 版です
+インストーラやアプリケーション実行時にこんな画面になることがあります。
 
-## 開発用に起動する
+<img width="534" height="500" alt="スクリーンショット 2026-04-07 164503" src="https://github.com/user-attachments/assets/dcf57f83-8ab8-4431-99a4-3bd43a9b76ae" />
 
-`WiFiErabi.App` フォルダで次を実行します。
+その際は、お手数ですが詳細情報をクリックいただき、実行を押してください。
 
-```powershell
-dotnet run
-```
-
-ビルドだけ行う場合はこちらです。
-
-```powershell
-dotnet build
-```
-
-## 配布用ファイルを作る
-
-ルートフォルダで次を実行します。
-
-```powershell
-powershell -File .\installer\Build-Publish.ps1
-```
-
-すると `artifacts/publish/win-x64` に配布用ファイルが出ます。
-
-## インストーラを作る
-
-Inno Setup 6 が入っていれば、次でインストーラまで作れます。
-
-```powershell
-powershell -File .\installer\Build-Installer.ps1
-```
-
-できあがるファイルは `artifacts/installer/WiFiErabi-Setup.exe` です。
-
-インストーラ設定ファイルは `installer/WiFiErabi.iss` です。
-
-## GitHub Releases で配布する
-
-タグを `v0.1.0` のように切って push すると、GitHub Actions の `Release` ワークフローで
-
-- インストーラ
-- portable zip
-
-を作って GitHub Releases に載せるようにしています。
-
-詳しい手順は `RELEASE.md` にまとめています。
-
-## うまく動かないとき
-
-Wi-Fi 一覧が取れないときは、次を確認してください。
-
-- 位置情報サービスが有効になっているか
-- アプリを管理者として実行しているか
-
-位置情報の設定画面は次で開けます。
-
-```powershell
-start ms-settings:privacy-location
-```
-
-GitHub Releases からダウンロードしたインストーラや zip を開くと、Windows Defender SmartScreen が
-`Windows によって PC が保護されました` と表示することがあります。
-
-その場合は、次の順で進めてください。
-
-1. 表示された画面で `詳細情報` を押す
-2. 内容を確認して問題なければ `実行` を押す
-
-zip を使う場合は、ダウンロードした zip を右クリックして `プロパティ` を開き、
-`許可する` が出ていればチェックしてから展開すると開きやすくなります。
+<img width="534" height="500" alt="スクリーンショット 2026-04-07 164513" src="https://github.com/user-attachments/assets/a69cf8ca-9b28-4627-aef8-5bbf9cc05edc" />
 
 ## フォント
 
-アプリ全体で `UDEV Gothic JPDOC` を使えるようにしてあります。
-フォントファイルは `WiFiErabi.App/Fonts` に置いています。
-
-## legacy について
-
-PowerShell 版の試作は `legacy` に残しています。
-比較や参照用で、今後の本命は `WiFiErabi.App` です。
+アプリ全体で `UDEV Gothic JPDOC` を使わせていただいております。
